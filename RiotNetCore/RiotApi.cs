@@ -14,10 +14,10 @@ namespace RiotNetCore
             _apiKey = apikey;
         }
 
-        public async Task<SummonerDTO> GetSummonerByName(string name)
+        public async Task<SummonerDTO> GetSummonerByName(string name, string region)
         {
            
-            ISummoner summoner = new Summoner.Summoner(new RequestLimit("na1", _apiKey));           
+            ISummoner summoner = new Summoner.Summoner(new RequestLimit(region, _apiKey));           
             var tmp =  await summoner.GetSummonerByName(name);
             return tmp;
            
