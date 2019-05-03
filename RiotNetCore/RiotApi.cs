@@ -17,7 +17,7 @@ namespace RiotNetCore
         public async Task<SummonerDTO> GetSummonerByName(string name, string region)
         {
            
-            ISummoner summoner = new Summoner.Summoner(new RequestLimit(region, _apiKey));           
+            ISummoner summoner = new Summoners(new RequestLimit(region, _apiKey));           
             var tmp =  await summoner.GetSummonerByName(name);
             return tmp;
            

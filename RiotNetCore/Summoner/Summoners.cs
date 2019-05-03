@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace RiotNetCore.Summoner
 {
-    class Summoner : ISummoner
+    class Summoners : ISummoner
     {
         
         private const string SummonerRootUrl = "/lol/summoner/v4/summoners";     
@@ -17,7 +17,7 @@ namespace RiotNetCore.Summoner
 
         private IRequestLimit _requesLimit;
 
-        public Summoner(IRequestLimit reqlim)
+        public Summoners(IRequestLimit reqlim)
         {
             _requesLimit = reqlim;
             url = $"{SummonerRootUrl}/{SummonerByNameUrl}";
