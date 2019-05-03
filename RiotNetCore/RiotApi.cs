@@ -9,6 +9,7 @@ namespace RiotNetCore
         private string _apiKey;
         
         
+        
         public RiotApi(string apikey)
         {
             _apiKey = apikey;
