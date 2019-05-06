@@ -7,7 +7,7 @@ namespace RiotNetCore
     public class RiotApi
     {
         private readonly string _apiKey;
-        public Settings Settings { get; private set; }
+        public Settings Settings { get;  set; }
 
 
         public RiotApi(string apikey)
