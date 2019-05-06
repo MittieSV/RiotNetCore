@@ -15,7 +15,7 @@ namespace RiotNetCore.Summoner
         
         readonly string url;
 
-        private IRequestLimit _requesLimit;
+        private readonly IRequestLimit _requesLimit;
 
         public Summoners(IRequestLimit reqlim)
         {
@@ -23,18 +23,21 @@ namespace RiotNetCore.Summoner
             url = $"{SummonerRootUrl}/{SummonerByNameUrl}";
         }
 
-        public async Task<SummonerDTO> GetSummonerByName(string name)
+        public async Task<SummonerDTO> GetSummonerByNameAsync(string name)
         {
-            
+
             var summonerUrl = url.Replace("{CurrentName}", name);
-            var tmp = await _requesLimit.GetRequest(summonerUrl);
-            MemoryStream stream = new MemoryStream(Encoding.UTF8.GetBytes(tmp));
-            stream.Position = 0;
-            var serializer = new DataContractJsonSerializer(typeof(SummonerDTO));
-            var summoner = serializer.ReadObject(stream) as SummonerDTO;
+            var tmp = await _requesLimit.GetRequestAsync(summonerUrl);
+            SummonerDTO summoner = null;
+            using (MemoryStream stream = new MemoryStream(Encoding.UTF8.GetBytes(tmp)))
+            {
+                stream.Position = 0;
+                var serializer = new DataContractJsonSerializer(typeof(SummonerDTO));
+                summoner = serializer.ReadObject(stream) as SummonerDTO;
+            }
 
             return summoner;
         }
-        
+
     }
 }

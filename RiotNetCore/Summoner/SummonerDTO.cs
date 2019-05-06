@@ -30,7 +30,9 @@ namespace RiotNetCore.Summoner
         [DataMember(Name = "summonerLevel")]
         public long summonerLevel { get; set; }
         /// <summary>
-        /// Date summoner was last modified specified as epoch milliseconds. The following events will update this timestamp: profile icon change, playing the tutorial or advanced tutorial, finishing a game, summoner name change
+        /// Date summoner was last modified specified as epoch milliseconds. 
+        /// The following events will update this timestamp: profile icon change, 
+        /// playing the tutorial or advanced tutorial, finishing a game, summoner name change
         /// </summary>
         [DataMember(Name = "revisionDate")]
         public long revisionDate { get; set; }

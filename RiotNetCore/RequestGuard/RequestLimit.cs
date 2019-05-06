@@ -10,27 +10,29 @@ namespace RiotNetCore.RequestGuard
     class RequestLimit : IRequestLimit
     {
         private readonly HttpClient client = new HttpClient();
-        private string BaseUrl = "https://{region}.api.riotgames.com";
-        private string _region;
-        private string _apikey;
-        private int _delay;
+        private readonly string BaseUrl = "https://{region}.api.riotgames.com";
+        private readonly string _region;
+        private readonly string _apikey;
+        private readonly Settings _settings;
 
-        public RequestLimit(string region, string apiKey)
+        public RequestLimit(string region, string apiKey, Settings settings)
         {
             _region = region;
             _apikey = apiKey;
-            
+            _settings = settings;
         }
-        public async Task<string> GetRequest(string url)
+        public async Task<string> GetRequestAsync(string url)
         {
             client.DefaultRequestHeaders.Accept.Clear();
             var tmpUrl = $"{BaseUrl}{url}?api_key={_apikey}";
             tmpUrl = tmpUrl.Replace("{region}", _region);
             string source = null;
             HttpResponseMessage response = await TaskAsync(tmpUrl);
-            //TODO: Add options for delay. Create Exeption
+           
             if (response.StatusCode == (HttpStatusCode)429)
             {
+                if(_settings.ThrowIfLimitReached)
+                    throw new RiotNetCoreRequestException("requests limit reached", response.StatusCode);
                 var retryAfter = response.Headers.GetValues("Retry-After");
                 Task.Delay(TimeSpan.FromSeconds(Convert.ToInt32(retryAfter.FirstOrDefault()))).Wait();
                 
@@ -39,7 +41,12 @@ namespace RiotNetCore.RequestGuard
  
             if (response != null && response.StatusCode == HttpStatusCode.OK)
             {
+               
                 source = await response.Content.ReadAsStringAsync();
+            }
+            else
+            {
+                throw new RiotNetCoreRequestException("Wrong api key", response.StatusCode);
             }
             
             return source;

@@ -4,6 +4,6 @@ namespace RiotNetCore.Summoner
 {
     interface ISummoner
     {
-        Task<SummonerDTO> GetSummonerByName(string name);
+        Task<SummonerDTO> GetSummonerByNameAsync(string name);
     }
 }

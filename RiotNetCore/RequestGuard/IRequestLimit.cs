@@ -4,6 +4,6 @@ namespace RiotNetCore.RequestGuard
 {
     interface IRequestLimit
     {
-        Task<string> GetRequest(string url);
+        Task<string> GetRequestAsync(string url);
     }
 }
