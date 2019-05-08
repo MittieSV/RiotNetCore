@@ -1,7 +1,5 @@
-﻿using RiotNetCore.RequestGuard;
-using System.IO;
-using System.Runtime.Serialization.Json;
-using System.Text;
+﻿using RiotNetCore.Helpers;
+using RiotNetCore.RequestGuard;
 using System.Threading.Tasks;
 
 
@@ -11,7 +9,7 @@ namespace RiotNetCore.Summoner
     {
         
         private const string SummonerRootUrl = "/lol/summoner/v4/summoners";     
-        private const string SummonerByNameUrl = "by-name/{CurrentName}";
+        private const string SummonerByNameUrl = "/by-name/{CurrentName}";
         
         readonly string url;
 
@@ -20,23 +18,14 @@ namespace RiotNetCore.Summoner
         public Summoners(IRequestLimit reqlim)
         {
             _requesLimit = reqlim;
-            url = $"{SummonerRootUrl}/{SummonerByNameUrl}";
+            url = $"{SummonerRootUrl}{SummonerByNameUrl}";
         }
 
         public async Task<SummonerDTO> GetSummonerByNameAsync(string name)
         {
-
             var summonerUrl = url.Replace("{CurrentName}", name);
-            var tmp = await _requesLimit.GetRequestAsync(summonerUrl);
-            SummonerDTO summoner = null;
-            using (MemoryStream stream = new MemoryStream(Encoding.UTF8.GetBytes(tmp)))
-            {
-                stream.Position = 0;
-                var serializer = new DataContractJsonSerializer(typeof(SummonerDTO));
-                summoner = serializer.ReadObject(stream) as SummonerDTO;
-            }
-
-            return summoner;
+            string tmp = await _requesLimit.GetRequestAsync(summonerUrl);
+            return JsonSerialization.JsonDeserialize<SummonerDTO>(tmp); ;
         }
 
     }

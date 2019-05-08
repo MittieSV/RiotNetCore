@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Extensions.Caching.Memory;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
@@ -14,12 +15,14 @@ namespace RiotNetCore.RequestGuard
         private readonly string _region;
         private readonly string _apikey;
         private readonly Settings _settings;
+        private readonly IMemoryCache _cache;
 
         public RequestLimit(string region, string apiKey, Settings settings)
         {
             _region = region;
             _apikey = apiKey;
             _settings = settings;
+            
         }
         public async Task<string> GetRequestAsync(string url)
         {
@@ -38,11 +41,12 @@ namespace RiotNetCore.RequestGuard
                 
                 response = await TaskAsync(tmpUrl);
             }
- 
+            //TODO Create a response status handler
             if (response != null && response.StatusCode == HttpStatusCode.OK)
             {
                
                 source = await response.Content.ReadAsStringAsync();
+                
             }
             else
             {
